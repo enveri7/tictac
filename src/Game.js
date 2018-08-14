@@ -1,12 +1,14 @@
 import React from "react";
 import Board from "./Board";
+import History from "./History";
 
 class Game extends React.Component {
   state = {
     situation_in_game: [null, null, null, null, null, null, null, null, null],
     IsItXTurn: true,
     winner: null,
-    turns_played: 0
+    turns_played: 0,
+    history: {}
   };
 
   calculateWinner = situation => {
@@ -15,7 +17,7 @@ class Game extends React.Component {
       [3, 4, 5],
       [6, 7, 8],
       [0, 3, 6],
-      [1, 4, 5],
+      [1, 4, 7],
       [2, 5, 8],
       [0, 4, 8],
       [2, 4, 6]
@@ -52,13 +54,27 @@ class Game extends React.Component {
   };
 
   changeSituation = index => {
-    let situation = this.state.situation_in_game.slice();
+    Object.keys(this.state.history).forEach(key => {
+      if (key > this.state.turns_played) {
+        delete this.state.history[key];
+      }
+    });
+
+    const situation = this.state.situation_in_game.slice();
+    const { history, turns_played, IsItXTurn } = { ...this.state };
+    history[turns_played + 1] = {
+      situation: situation,
+      IsItXTurn: IsItXTurn
+    };
     if (situation[index] === null && this.state.winner === null) {
       situation[index] = this.state.IsItXTurn ? "X" : "O";
+      this.setState({
+        situation_in_game: situation,
+        IsItXTurn: !this.state.IsItXTurn,
+        turns_played: this.state.turns_played + 1,
+        history: history
+      });
       this.calculateWinner(situation);
-      this.setState({ situation_in_game: situation });
-      this.setState({ IsItXTurn: !this.state.IsItXTurn });
-      this.setState({ turns_played: this.state.turns_played + 1 });
     }
   };
 
@@ -67,8 +83,23 @@ class Game extends React.Component {
       situation_in_game: [null, null, null, null, null, null, null, null, null],
       IsItXTurn: true,
       winner: null,
-      turns_played: 0
+      turns_played: 0,
+      history: []
     });
+  };
+
+  rewindHistory = (history, turns) => {
+    this.setState(
+      {
+        situation_in_game: history.situation,
+        IsItXTurn: !history.IsItXTurn,
+        turns_played: parseInt(turns, 10),
+        winner: null
+      },
+      () => {
+        this.calculateWinner(this.state.situation_in_game);
+      }
+    );
   };
 
   render() {
@@ -88,12 +119,21 @@ class Game extends React.Component {
     if (this.state.winner !== null) {
       header = `The winner is ${this.state.winner}!`;
     }
-
     return (
       <div className="game">
         <h1>{header}</h1>
         <div className="container">
-          <div className="row-3" />
+          <div className="row-3">
+            <h2>Go back to:</h2>
+            {Object.keys(this.state.history).map(key => (
+              <History
+                key={key}
+                index={key}
+                history={this.state.history[key]}
+                rewindHistory={this.rewindHistory}
+              />
+            ))}
+          </div>
           <div className="row-3">
             <Board
               changeSituation={this.changeSituation}
