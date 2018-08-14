@@ -54,19 +54,21 @@ class Game extends React.Component {
   };
 
   changeSituation = index => {
-    Object.keys(this.state.history).forEach(key => {
-      if (key > this.state.turns_played) {
-        delete this.state.history[key];
-      }
-    });
-
     const situation = this.state.situation_in_game.slice();
-    const { history, turns_played, IsItXTurn } = { ...this.state };
-    history[turns_played + 1] = {
-      situation: situation,
-      IsItXTurn: IsItXTurn
-    };
+
     if (situation[index] === null && this.state.winner === null) {
+      Object.keys(this.state.history).forEach(key => {
+        if (key > this.state.turns_played) {
+          delete this.state.history[key];
+        }
+      });
+
+      const { history, turns_played, IsItXTurn } = { ...this.state };
+      history[turns_played + 1] = {
+        situation: situation,
+        IsItXTurn: IsItXTurn
+      };
+
       situation[index] = this.state.IsItXTurn ? "X" : "O";
       this.setState({
         situation_in_game: situation,
@@ -106,13 +108,12 @@ class Game extends React.Component {
     let header = `It is ${this.state.IsItXTurn ? "X" : "O"}'s turn.`;
     let playagain = <div />;
 
-    if (this.state.winner !== null || this.state.turns_played === 9) {
-      playagain = (
-        <button className="play_again" onClick={this.playAgain}>
-          Play again
-        </button>
-      );
-    }
+    playagain = (
+      <button className="play_again" onClick={this.playAgain}>
+        Clear board
+      </button>
+    );
+
     if (this.state.turns_played === 9) {
       header = "Tie!";
     }
