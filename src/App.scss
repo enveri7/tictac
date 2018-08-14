@@ -1,3 +1,6 @@
+$squareSize: 70px;
+$boardSize: $squareSize * 3;
+
 .App {
   text-align: center;
 }
@@ -31,12 +34,19 @@
   }
 }
 
-// .board {
-//   animation: App-logo-spin infinite 20s linear;
-// }
+.board {
+  width: $boardSize;
+}
+
+.board-row {
+  width: $boardSize; //these values hold square size 50px height and 150/3 = 50px width
+  height: $squareSize;
+  display: -webkit-flex; /* Safari */
+  display: flex;
+}
 
 .square {
-  min-width: 70px;
+  min-width: $squareSize;
   color: rgb(0, 0, 0);
   background-color: rgb(255, 255, 255);
   border: 1px solid rgb(0, 0, 0);
@@ -51,14 +61,33 @@
   background: rgb(250, 250, 250);
 }
 
-.board-row {
+button:focus {
+  outline: 0;
+}
+
+.container {
   margin: auto;
-  width: 210px; //these values hold square size 50px height and 150/3 = 50px width
-  height: 70px;
+  width: $boardSize * 3;
   display: -webkit-flex; /* Safari */
   display: flex;
 }
 
-button:focus {
-  outline: 0;
+.row-3 {
+  flex-basis: $boardSize;
+}
+
+.play_again {
+  background-color: #03576c;
+  border: 1px solid black;
+  border-radius: 4px;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+
+.play_again:hover {
+  background-color: #0a6880;
 }

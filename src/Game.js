@@ -5,7 +5,8 @@ class Game extends React.Component {
   state = {
     situation_in_game: [null, null, null, null, null, null, null, null, null],
     IsItXTurn: true,
-    winner: null
+    winner: null,
+    turns_played: 0
   };
 
   calculateWinner = situation => {
@@ -57,21 +58,50 @@ class Game extends React.Component {
       this.calculateWinner(situation);
       this.setState({ situation_in_game: situation });
       this.setState({ IsItXTurn: !this.state.IsItXTurn });
+      this.setState({ turns_played: this.state.turns_played + 1 });
     }
   };
 
+  playAgain = () => {
+    this.setState({
+      situation_in_game: [null, null, null, null, null, null, null, null, null],
+      IsItXTurn: true,
+      winner: null,
+      turns_played: 0
+    });
+  };
+
   render() {
+    let header = `It is ${this.state.IsItXTurn ? "X" : "O"}'s turn.`;
+    let playagain = <div />;
+
+    if (this.state.winner !== null || this.state.turns_played === 9) {
+      playagain = (
+        <button className="play_again" onClick={this.playAgain}>
+          Play again
+        </button>
+      );
+    }
+    if (this.state.turns_played === 9) {
+      header = "Tie!";
+    }
+    if (this.state.winner !== null) {
+      header = `The winner is ${this.state.winner}!`;
+    }
+
     return (
       <div className="game">
-        <h1>
-          {this.state.winner === null
-            ? `Whose turn?: ${this.state.IsItXTurn ? "X" : "O"}`
-            : `Winner: ${this.state.winner}`}
-        </h1>
-        <Board
-          changeSituation={this.changeSituation}
-          current_situation={this.state.situation_in_game}
-        />
+        <h1>{header}</h1>
+        <div className="container">
+          <div className="row-3" />
+          <div className="row-3">
+            <Board
+              changeSituation={this.changeSituation}
+              current_situation={this.state.situation_in_game}
+            />
+          </div>
+          <div className="row-3">{playagain}</div>
+        </div>
       </div>
     );
   }
