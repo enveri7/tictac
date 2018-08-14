@@ -23,6 +23,28 @@
 }
 
 @keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.board {
+  margin-top: 50px;
+}
+.square {
+  color: rgb(0, 0, 0);
+  background-color: rgb(255, 255, 255);
+  border: 1px solid rgb(0, 0, 0);
+  -webkit-flex-grow: 1;
+}
+
+.board-row {
+  margin: auto;
+  width: 150px; //these values hold square size 50px height and 150/3 = 50px width
+  height: 50px;
+  display: -webkit-flex; /* Safari */
+  display: flex;
 }
